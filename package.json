@@ -1,0 +1,16 @@
+{
+  "name": "electronflashclient",
+  "version": "1.0.0",
+  "description": "Client for websites with Flash Player content",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . \"Eletron Flash Client\" --overwrite --platform=win32 --arch=x64 --icon=src/icon.ico --asar.unpackDir=lib"
+  },
+  "author": "Edgar S Rodrigues",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "11.0.0",
+    "electron-packager": "^17.1.1"
+  }
+}
