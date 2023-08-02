@@ -1,12 +1,12 @@
 <p align="center">
-  <img alt="electron-flash-client" src="">
+  <img alt="electron-flash-client" width="200px" src="src/assets/img/icon.webp">
 </p>
 
 # Electron Flash Client
 
 A simple tool to access websites with Flash Player content
 
-<img alt="screenshot" width="700px" src="">
+<img alt="screenshot" width="700px" src="screenshot-1.png">
 
 ## Packaging
 
