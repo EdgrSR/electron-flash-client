@@ -1,16 +1,26 @@
 {
-  "name": "electronflashclient",
-  "version": "1.0.0",
-  "description": "Client for websites with Flash Player content",
-  "main": "src/main.js",
+  "name": "electron-flash-client",
+  "productName": "Electron Flash Client",
+  "version": "2.0.0",
+  "description": "A simple tool to access websites with Flash Player content",
+  "main": "src/index.js",
   "scripts": {
-    "start": "electron .",
-    "package": "electron-packager . \"Eletron Flash Client\" --overwrite --platform=win32 --arch=x64 --icon=src/icon.ico --asar.unpackDir=lib"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
   },
+  "keywords": [],
   "author": "Edgar S Rodrigues",
   "license": "MIT",
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
   "devDependencies": {
-    "electron": "11.0.0",
-    "electron-packager": "^17.1.1"
+    "@electron-forge/cli": "^6.2.1",
+    "@electron-forge/maker-squirrel": "^6.2.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
+    "electron": "11.0.0"
   }
 }
