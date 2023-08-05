@@ -2,6 +2,7 @@ module.exports = {
   packagerConfig: {
     executableName: "Electron Flash Client",
     icon: "lib/icon/icon",
+    electronVersion: "11.0.0",
     asar: {
       unpackDir: "lib/flash",
     },
@@ -10,7 +11,9 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: "lib/icon/icon.ico"
+      },
     },
   ],
   plugins: [
