@@ -14,12 +14,17 @@ Download the installer from the [latest release](../../releases/latest) and run 
 
 ## Packaging
 
-Install ***NodeJS***, clone the project, test it and package using ***Electron Forge***
+- Install ***NodeJS***
+- Clone the project
+- Install dependencies with ``npm i``
+- Test it with ``npm start``
+- Package it with ``npm run package``
+- Make the installer with ``npm run make``
 
-***NOTE***: You should install and configure the maker that fits your needs, the only requirement is to have ***lib/flash*** unpacked from ***asar***
+***NOTE***: You should install and configure the ***maker*** that fits your needs, the only requirement is to have ***lib/flash*** unpacked from ***asar***
 
-```shell
-$ npm i
-$ npm start
-$ npm run make
-```
+## Upcoming
+
+- Flash Player memory hacking
+- Ad blocking
+- File size reduction
