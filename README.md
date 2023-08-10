@@ -4,27 +4,27 @@
 
 # Electron Flash Client
 
-A simple tool to access websites with Flash Player content
+A simplified browser to access websites with Flash Player content
 
 <img alt="screenshot" width="600px" src="screenshot-1.png">
 
 ## Installation
 
-Download the installer from the [latest release](../../releases/latest) and run it. It will be installed at ***AppData/Local*** with a desktop shortcut
+Download from the [latest release](../../releases/latest) and run
 
 ## Packaging
 
 - Install ***NodeJS***
 - Clone the project
 - Install dependencies with ``npm i``
-- Test it with ``npm start``
-- Package it with ``npm run package``
-- Make the installer with ``npm run make``
+- Run with ``npm start``
+- Alter ***forge.config.js***
+- Package with ``npm run package``
+- Make an installer with ``npm run make``
 
-***NOTE***: You should install and configure the ***maker*** that fits your needs, the only requirement is to have ***lib/flash*** unpacked from ***asar***
+***NOTE***: ***lib/flash*** shoud be unpacked from ***asar***
 
-## Upcoming
+## Future
 
 - Flash Player memory hacking
 - Ad blocking
-- File size reduction
