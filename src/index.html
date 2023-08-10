@@ -1,30 +1,62 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en">
+<html data-bs-theme="dark" lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Electron Flash Client</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/styles.min.css">
 </head>
 
 <body>
-    <section class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="col d-flex flex-column align-items-center" style="max-width: 330px;">
-            <div class="d-inline-flex align-items-center" style="margin-bottom: 30px;"><img src="assets/img/icon.webp" width="388" height="480" style="width: 100px;height: 100px;">
-                <h1 class="fw-lighter" style="margin-left: 11px;margin-bottom: 0px;font-size: 37px;">Electron Flash Client</h1>
+    <nav class="navbar navbar-expand-md fixed-top bg-body d-inline-flex flex-nowrap" style="-webkit-app-region: drag">
+        <div class="container-fluid">
+            <div class="d-inline-flex align-items-center flex-nowrap">
+                <button class="btn d-inline-flex" data-bss-hover-animate="pulse" type="button" style="border-style: none;border-radius: 0px;padding: 5px 0px;-webkit-app-region: no-drag">
+                    <img src="assets/img/icon.webp" width="45" height="45">
+                </button>
+                <button id="back" class="btn d-inline-flex" data-bss-hover-animate="wobble" type="button" style="padding: 0px 10px;border-style: none;border-radius: 0px;-webkit-app-region: no-drag">
+                    <i class="icon ion-ios-arrow-left" style="font-size: 30px;"></i>
+                </button>
+                <button id="forward" class="btn d-inline-flex" data-bss-hover-animate="wobble" type="button" style="padding: 0px 10px;border-style: none;border-radius: 0px;-webkit-app-region: no-drag">
+                    <i class="icon ion-ios-arrow-right" style="font-size: 30px;"></i>
+                </button>
+                <button id="reload" class="btn d-inline-flex" data-bss-hover-animate="tada" type="button" style="border-style: none;border-radius: 0px;padding-top: 4px;padding-bottom: 4px;padding-right: 10px;padding-left: 5px;-webkit-app-region: no-drag">
+                    <i class="icon ion-android-refresh" style="font-size: 25px;"></i>
+                </button>
             </div>
-            <div style="margin-bottom: 30px;">
-                <p style="margin: 0px;text-align: justify;">FLASH PLAYER IS UNSAFE, for it to work both CHROMIUM AND ELECTRON ARE OUTDATED. Use only to access trusted websites.</p>
-            </div>
-            <form class="d-inline-flex" onsubmit="loadWebsite(event)">
-                <input class="shadow-none form-control" type="url" value="https://" style="margin-right: 10px;border-width: 2px;" id="urlinput" name="urlinput">
-                <input class="btn btn-primary" type="submit" style="border-style: none;background: rgb(149,24,23);" value="submit">
+            <form id="url-form" class="d-inline-flex flex-fill align-items-center flex-nowrap" style="padding: 0px 5px;">
+                <input id="url-input" class="border-secondary shadow-none form-control" type="url" style="padding: 3px 8px;border-radius: 4px;border-style: solid;height: 27px;margin: 0px;-webkit-app-region: no-drag" value="https://">
             </form>
+            <div class="d-inline-flex align-items-center flex-nowrap">
+                <button id="minimize" class="btn d-inline-flex" data-bss-hover-animate="flash" type="button" style="padding: 10px;border-style: none;border-radius: 0px;-webkit-app-region: no-drag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-dash-lg" style="font-size: 17px;">
+                        <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"></path>
+                    </svg>
+                </button>
+                <button id="maximize" class="btn d-inline-flex" data-bss-hover-animate="flash" type="button" style="padding: 10px;border-style: none;border-radius: 0px;-webkit-app-region: no-drag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-square" style="font-size: 12px;">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+                    </svg>
+                </button>
+                <button id="quit" class="btn d-inline-flex" data-bss-hover-animate="flash" type="button" style="padding: 10px;border-style: none;border-radius: 0px;-webkit-app-region: no-drag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-x-lg">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-    </section>
-    <script src="assets/other/js/loader.js"></script>
+    </nav>
+    <div class="container-fluid d-flex flex-column flex-wrap" style="margin: 0px;padding: 0px;height: 100vh;">
+        <div class="flex-grow-1" style="max-height: 71px;"></div>
+        <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+            <h1 class="fw-lighter" style="text-align: center;font-size: 25px;">Flash is unsafe!<br>Access only trusted websites!</h1>
+        </div>
+    </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/script.min.js"></script>
 </body>
-
+<script src="renderer.js"></script>
 </html>
