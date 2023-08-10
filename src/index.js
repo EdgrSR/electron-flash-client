@@ -31,6 +31,7 @@ const createWindow = () => {
         height: 600,
         icon: path.join(__dirname, '..', 'lib/icon/icon' + icon[process.platform]),
         autoHideMenuBar: true,
+        // frame: false,
         webPreferences: {
             plugins: true,
             contextIsolation: true
@@ -45,14 +46,6 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
