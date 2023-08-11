@@ -2,7 +2,7 @@
   "name": "electron-flash-client",
   "productName": "Electron Flash Client",
   "version": "2.0.1",
-  "description": "A simple tool to access websites with Flash Player content",
+  "description": "A simplified browser to access websites with Flash Player content",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
