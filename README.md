@@ -10,7 +10,7 @@ A simplified browser to access websites with Flash Player content
 
 ## Installation
 
-Download from the [latest release](../../releases/latest) and run
+Download from the [latest release](../../releases/latest) and run the executable
 
 ## Packaging
 
@@ -20,9 +20,8 @@ Download from the [latest release](../../releases/latest) and run
 - Run with ``npm start``
 - Alter ***forge.config.js***
 - Package with ``npm run package``
-- Make an installer with ``npm run make``
 
-***NOTE***: ***lib/flash*** shoud be unpacked from ***asar***
+***NOTE***: ***lib/flash*** shoud be unpacked from ***asar***, alter ***ignore*** accordingly to your OS
 
 ## Future
 
