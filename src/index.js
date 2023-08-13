@@ -24,6 +24,7 @@ const icon = {
 
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
+        backgroundColor: '#212529',
         width: 800,
         height: 600,
         minWidth: 350,
@@ -40,6 +41,7 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
     const view = new BrowserView({
+        backgroundColor: '#212529',
         webPreferences: {
             plugins: true,
             contextIsolation: true,
@@ -49,10 +51,14 @@ const createWindow = () => {
     mainWindow.setBrowserView(view);
 
     view.setBounds({ x: 0, y: 71, width: 800, height: 529 });
-    view.setAutoResize({ width: true, height: true , horizontal: true, vertical: false });
+    view.setAutoResize({ width: true, height: true, horizontal: true, vertical: false });
 
     view.webContents.on('new-window', (event) => {
         event.preventDefault();
+    });
+
+    view.webContents.on('did-navigate', (event, url) => {
+        mainWindow.webContents.executeJavaScript(`document.getElementById('url-input').value = '${url}';`);
     });
 
     ipcMain.on('load', (event, arg) => {
