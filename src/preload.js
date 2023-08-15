@@ -19,7 +19,7 @@ contextBridge.exposeInMainWorld('action', {
     maximize: () => {
         ipcRenderer.send('maximize');
     },
-    quit: () => {
-        ipcRenderer.send('quit');
+    close: () => {
+        ipcRenderer.send('close');
     },
 });

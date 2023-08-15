@@ -16,82 +16,127 @@ if (app.isPackaged) {
 }
 app.commandLine.appendSwitch('ignore-certificate-errors');
 
+let windows = [];
+
+ipcMain.on('load', (event, url) => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            window.view.webContents.loadURL(url);
+        }
+    });
+});
+
+ipcMain.on('forward', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            if (window.view.webContents.canGoForward()) window.view.webContents.goForward();
+        }
+    });
+});
+
+ipcMain.on('back', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            if (window.view.webContents.canGoBack()) window.view.webContents.goBack();
+        }
+    });
+});
+
+ipcMain.on('reload', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            window.view.webContents.reload();
+        }
+    });
+});
+
+ipcMain.on('minimize', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            window.mainWindow.isMinimized() ? window.mainWindow.restore() : window.mainWindow.minimize();
+        }
+    });
+});
+
+ipcMain.on('maximize', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            window.mainWindow.isMaximized() ? window.mainWindow.restore() : window.mainWindow.maximize();
+        }
+    });
+});
+
+ipcMain.on('close', () => {
+    windows.forEach(window => {
+        if (window.mainWindow.isFocused()){
+            window.mainWindow.close();
+            windows.splice(windows.indexOf(window), 1);
+        }
+    });
+});
+
 const icon = {
     win32: '.ico',
     darwin: '.icns',
     linux: '.png',
 };
 
-const createWindow = () => {
-    const mainWindow = new BrowserWindow({
-        backgroundColor: '#212529',
-        width: 800,
-        height: 600,
-        minWidth: 350,
-        minHeight: 200,
-        icon: path.join(__dirname, '..', 'lib/icon/app' + icon[process.platform]),
-        autoHideMenuBar: true,
-        frame: false,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true,
-        },
-    });
+class Window {
+    constructor(url) {
+        this.mainWindow = new BrowserWindow({
+            backgroundColor: '#212529',
+            width: 800,
+            height: 600,
+            minWidth: 350,
+            minHeight: 200,
+            icon: path.join(__dirname, '..', 'lib/icon/app' + icon[process.platform]),
+            autoHideMenuBar: true,
+            frame: false,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                contextIsolation: true,
+            },
+        });
 
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+        this.mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-    const view = new BrowserView({
-        backgroundColor: '#212529',
-        webPreferences: {
-            plugins: true,
-            contextIsolation: true,
-        },
-    });
+        this.view = new BrowserView({
+            backgroundColor: '#212529',
+            webPreferences: {
+                plugins: true,
+                contextIsolation: true,
+            },
+        });
 
-    mainWindow.setBrowserView(view);
+        this.mainWindow.setBrowserView(this.view);
 
-    view.setBounds({ x: 0, y: 71, width: 800, height: 529 });
-    view.setAutoResize({ width: true, height: true, horizontal: true, vertical: false });
+        this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width, height: this.mainWindow.getBounds().height - 71 });
 
-    view.webContents.on('new-window', (event) => {
-        event.preventDefault();
-    });
+        this.mainWindow.on('resize', () => {
+            this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width, height: this.mainWindow.getBounds().height - 71 });
+        });
 
-    view.webContents.on('did-navigate', (event, url) => {
-        mainWindow.webContents.executeJavaScript(`document.getElementById('url-input').value = '${url}';`);
-    });
+        this.mainWindow.on('maximize', () => {
+            this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width - 16, height: this.mainWindow.getBounds().height - 87 });
+        });
 
-    ipcMain.on('load', (event, arg) => {
-        view.webContents.loadURL(arg);
-    });
+        this.view.webContents.on('new-window', (event, url) => {
+            event.preventDefault();
+            windows.push(new Window(url));
+        });
 
-    ipcMain.on('forward', () => {
-        if (view.webContents.canGoForward()) view.webContents.goForward();
-    });
+        this.view.webContents.on('did-navigate', (event, url) => {
+            this.mainWindow.webContents.executeJavaScript(`document.getElementById('url-input').value = '${url}';`);
+        });
 
-    ipcMain.on('back', () => {
-        if (view.webContents.canGoBack()) view.webContents.goBack();
-    });
-
-    ipcMain.on('reload', () => {
-        view.webContents.reload();
-    });
-
-    ipcMain.on('minimize', () => {
-        mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize();
-    });
-
-    ipcMain.on('maximize', () => {
-        mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
-    });
-
-    ipcMain.on('quit', () => {
-        app.quit();
-    });
+        if (url) {
+            this.view.webContents.loadURL(url);
+        }
+    }
 }
 
 app.on('ready', () => {
-    createWindow();
+    windows.push(new Window());
 });
 
 app.on('window-all-closed', () => {
@@ -99,5 +144,5 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) new Window();
 });

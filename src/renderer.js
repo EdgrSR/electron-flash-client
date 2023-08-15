@@ -5,7 +5,7 @@ const backButton = document.getElementById('back');
 const reloadButton = document.getElementById('reload');
 const minimizeButton = document.getElementById('minimize');
 const maximizeButton = document.getElementById('maximize');
-const quitButton = document.getElementById('quit');
+const closeButton = document.getElementById('close');
 
 urlForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -33,6 +33,6 @@ maximizeButton.addEventListener('click', () => {
     window.action.maximize();
 });
 
-quitButton.addEventListener('click', () => {
-    window.action.quit();
+closeButton.addEventListener('click', () => {
+    window.action.close();
 });
