@@ -7,10 +7,18 @@ const minimizeButton = document.getElementById('minimize');
 const maximizeButton = document.getElementById('maximize');
 const closeButton = document.getElementById('close');
 
+urlInput.addEventListener("dragstart", function(event) {
+    event.preventDefault();
+});
+
 urlForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const url = urlInput.value.trim();
-    if (url !== '' && urlInput.checkValidity()) window.action.load(url);
+    urlInput.blur();
+    let url = urlInput.value.trim();
+    if (url !== '') {
+        if (!url.includes('://')) url = 'https://' + url;
+        window.action.load(url);
+    }
 });
 
 forwardButton.addEventListener('click', () => {

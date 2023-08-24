@@ -1,3 +1,5 @@
+delete require('electron').nativeImage.createThumbnailFromPath;
+
 const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
 const path = require('path');
 
@@ -137,6 +139,17 @@ class Window {
 
 app.on('ready', () => {
     windows.push(new Window());
+});
+
+app.on('web-contents-created', (e, webContents) => {
+    webContents.on('will-redirect', (e, url) => {
+        if (/^file:/.test(url)) e.preventDefault();
+    });
+
+    webContents.on('select-bluetooth-device', (event, devices, callback) => {
+        event.preventDefault();
+        callback('');
+    });
 });
 
 app.on('window-all-closed', () => {
