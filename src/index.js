@@ -18,63 +18,32 @@ if (app.isPackaged) {
 }
 app.commandLine.appendSwitch('ignore-certificate-errors');
 
-let windows = [];
-
 ipcMain.on('load', (event, url) => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            window.view.webContents.loadURL(url);
-        }
-    });
+    BrowserWindow.getFocusedWindow().getBrowserView().webContents.loadURL(url);
 });
 
 ipcMain.on('forward', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            if (window.view.webContents.canGoForward()) window.view.webContents.goForward();
-        }
-    });
+    if (BrowserWindow.getFocusedWindow().getBrowserView().webContents.canGoForward()) BrowserWindow.getFocusedWindow().getBrowserView().webContents.goForward();
 });
 
 ipcMain.on('back', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            if (window.view.webContents.canGoBack()) window.view.webContents.goBack();
-        }
-    });
+    if (BrowserWindow.getFocusedWindow().getBrowserView().webContents.canGoBack()) BrowserWindow.getFocusedWindow().getBrowserView().webContents.goBack();
 });
 
 ipcMain.on('reload', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            window.view.webContents.reload();
-        }
-    });
+    BrowserWindow.getFocusedWindow().getBrowserView().webContents.reload();
 });
 
 ipcMain.on('minimize', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            window.mainWindow.isMinimized() ? window.mainWindow.restore() : window.mainWindow.minimize();
-        }
-    });
+    BrowserWindow.getFocusedWindow().isMinimized() ? BrowserWindow.getFocusedWindow().restore() : BrowserWindow.getFocusedWindow().minimize();
 });
 
 ipcMain.on('maximize', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            window.mainWindow.isMaximized() ? window.mainWindow.restore() : window.mainWindow.maximize();
-        }
-    });
+    BrowserWindow.getFocusedWindow().isMaximized() ? BrowserWindow.getFocusedWindow().restore() : BrowserWindow.getFocusedWindow().maximize();
 });
 
 ipcMain.on('close', () => {
-    windows.forEach(window => {
-        if (window.mainWindow.isFocused()){
-            window.mainWindow.close();
-            windows.splice(windows.indexOf(window), 1);
-        }
-    });
+    BrowserWindow.getFocusedWindow().close();
 });
 
 const icon = {
@@ -83,62 +52,60 @@ const icon = {
     linux: '.png',
 };
 
-class Window {
-    constructor(url) {
-        this.mainWindow = new BrowserWindow({
-            backgroundColor: '#212529',
-            width: 800,
-            height: 600,
-            minWidth: 350,
-            minHeight: 200,
-            icon: path.join(__dirname, '..', 'lib/icon/app' + icon[process.platform]),
-            autoHideMenuBar: true,
-            frame: false,
-            webPreferences: {
-                preload: path.join(__dirname, 'preload.js'),
-                contextIsolation: true,
-            },
-        });
+const createWindow = (url) => {
+    const mainWindow = new BrowserWindow({
+        backgroundColor: '#212529',
+        width: 800,
+        height: 600,
+        minWidth: 350,
+        minHeight: 200,
+        icon: path.join(__dirname, '..', 'lib/icon/app' + icon[process.platform]),
+        autoHideMenuBar: true,
+        frame: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+        },
+    });
 
-        this.mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-        this.view = new BrowserView({
-            backgroundColor: '#212529',
-            webPreferences: {
-                plugins: true,
-                contextIsolation: true,
-            },
-        });
+    const view = new BrowserView({
+        backgroundColor: '#212529',
+        webPreferences: {
+            plugins: true,
+            contextIsolation: true,
+        },
+    });
 
-        this.mainWindow.setBrowserView(this.view);
+    mainWindow.setBrowserView(view);
 
-        this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width, height: this.mainWindow.getBounds().height - 71 });
+    view.setBounds({ x: 0, y: 71, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 71 });
 
-        this.mainWindow.on('resize', () => {
-            this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width, height: this.mainWindow.getBounds().height - 71 });
-        });
+    mainWindow.on('resize', () => {
+        view.setBounds({ x: 0, y: 71, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 71 });
+    });
 
-        this.mainWindow.on('maximize', () => {
-            this.view.setBounds({ x: 0, y: 71, width: this.mainWindow.getBounds().width - 16, height: this.mainWindow.getBounds().height - 87 });
-        });
+    mainWindow.on('maximize', () => {
+        view.setBounds({ x: 0, y: 71, width: mainWindow.getBounds().width - 16, height: mainWindow.getBounds().height - 87 });
+    });
 
-        this.view.webContents.on('new-window', (event, url) => {
-            event.preventDefault();
-            windows.push(new Window(url));
-        });
+    view.webContents.on('new-window', (event, url) => {
+        event.preventDefault();
+        createWindow(url);
+    });
 
-        this.view.webContents.on('did-navigate', (event, url) => {
-            this.mainWindow.webContents.executeJavaScript(`document.getElementById('url-input').value = '${url}';`);
-        });
+    view.webContents.on('did-navigate', (event, url) => {
+        mainWindow.webContents.executeJavaScript(`document.getElementById('url-input').value = '${url}';`);
+    });
 
-        if (url) {
-            this.view.webContents.loadURL(url);
-        }
+    if (url) {
+        view.webContents.loadURL(url);
     }
 }
 
 app.on('ready', () => {
-    windows.push(new Window());
+    createWindow();
 });
 
 app.on('web-contents-created', (e, webContents) => {
@@ -157,5 +124,5 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) new Window();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
