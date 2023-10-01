@@ -4,7 +4,7 @@
 
 # Electron Flash Client
 
-A simplified browser to access websites with Flash Player content, made with NodeJS, Electron and Bootstrap
+A simplified browser to access websites with Flash Player content. Made with NodeJS, Electron and Bootstrap
 
 <img alt="screenshot" width="600px" src="screenshot-1.png">
 
